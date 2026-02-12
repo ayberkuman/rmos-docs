@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono, JetBrains_Mono } from "next/font/google";
 import "./globals.css";
+import { NeonAuthUIProvider, UserButton } from "@neondatabase/auth/react";
+import { authClient } from "@/lib/auth/client";
 import { cn } from "@/lib/utils";
 
 const jetbrainsMono = JetBrains_Mono({
@@ -29,11 +31,23 @@ export default function RootLayout({
 	children: React.ReactNode;
 }>) {
 	return (
-		<html lang="en" className={cn(jetbrainsMono.variable, "dark")}>
+		<html
+			suppressHydrationWarning
+			lang="en"
+			className={cn(jetbrainsMono.variable, "dark")}
+		>
 			<body
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
-				{children}
+				<NeonAuthUIProvider
+					authClient={authClient}
+					redirectTo="/account/settings"
+				>
+					<header className="flex justify-end items-center p-4 gap-4 h-16">
+						<UserButton size="icon" />
+					</header>
+					{children}
+				</NeonAuthUIProvider>
 			</body>
 		</html>
 	);
