@@ -9,7 +9,7 @@ export default function Page() {
 			<div>landing</div>
 			<Button
 				onClick={() => {
-					router.push("/auth/asjdkasygd");
+					router.push("/auth/sign-up");
 				}}
 			>
 				Auth

@@ -1,4 +1,5 @@
 import { AuthView } from "@neondatabase/auth/react";
+import { SignUpWithVerification } from "@/components/auth/sign-up-with-verification";
 
 export const dynamicParams = false;
 
@@ -11,7 +12,11 @@ export default async function AuthPage({
 
 	return (
 		<main className="container mx-auto flex grow flex-col items-center justify-center gap-3 self-center p-4 md:p-6">
-			<AuthView path={path} />
+			{path === "sign-up" ? (
+				<SignUpWithVerification />
+			) : (
+				<AuthView path={path} />
+			)}
 		</main>
 	);
 }
