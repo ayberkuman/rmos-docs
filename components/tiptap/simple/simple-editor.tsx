@@ -8,7 +8,12 @@ import { Superscript } from "@tiptap/extension-superscript";
 import { TextAlign } from "@tiptap/extension-text-align";
 import { Typography } from "@tiptap/extension-typography";
 import { Selection } from "@tiptap/extensions";
-import { EditorContent, EditorContext, useEditor } from "@tiptap/react";
+import {
+	type Content,
+	EditorContent,
+	EditorContext,
+	useEditor,
+} from "@tiptap/react";
 // --- Tiptap Core Extensions ---
 import { StarterKit } from "@tiptap/starter-kit";
 import { useEffect, useRef, useState } from "react";
@@ -68,8 +73,6 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 import "@/components/tiptap/simple/simple-editor.scss";
 
 import { useAsyncDebouncer } from "@tanstack/react-pacer/async-debouncer";
-
-import content from "@/components/tiptap/simple/data/content.json";
 
 const MainToolbarContent = ({
 	onHighlighterClick,
@@ -179,7 +182,7 @@ const MobileToolbarContent = ({
 	</>
 );
 
-export function SimpleEditor() {
+export function SimpleEditor({ content }: { content: Content }) {
 	const isMobile = useIsBreakpoint();
 	const { height } = useWindowSize();
 	const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
@@ -244,7 +247,7 @@ export function SimpleEditor() {
 				onError: (error) => console.error("Upload failed:", error),
 			}),
 		],
-		content,
+		content: content,
 	});
 
 	const rect = useCursorVisibility({

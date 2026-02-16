@@ -1,3 +1,4 @@
+import type { Content } from "@tiptap/react";
 import {
   boolean,
   index,
@@ -15,7 +16,7 @@ export const documents = pgTable(
     id: uuid("id").primaryKey().defaultRandom(),
     title: text("title").notNull().default("Untitled"),
     slug: text("slug").notNull().unique(),
-    content: jsonb("content"),
+    content: jsonb("content").$type<Content>(),
     icon: text("icon"),
 
     // Tree
