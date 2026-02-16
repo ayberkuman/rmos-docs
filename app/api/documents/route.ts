@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { db } from "@/db";
 import { documents } from "@/db/schema";
 import { getAllDocumentsMeta } from "@/lib/queries/documents";
-import { generateUniqueSlug } from "@/lib/slug";
+import { generateUniqueSlug } from "@/lib/utils/slug";
 
 export const dynamic = "force-dynamic";
 

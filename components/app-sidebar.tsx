@@ -43,7 +43,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			</SidebarContent>
 			<SidebarFooter>
 				<div className="flex items-center justify-end py-2">
-					<UserButton size="icon" />
+					<UserButton size="icon" align="end" />
 				</div>
 			</SidebarFooter>
 			<SidebarRail />

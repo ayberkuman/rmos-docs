@@ -9,7 +9,6 @@ import {
 } from "@/components/ui/sidebar";
 import { getAllDocumentsMeta } from "@/lib/queries/documents";
 import { getQueryClient } from "@/lib/react-query/get-query-client";
-import { documentKeys } from "@/lib/react-query/queries";
 
 export default async function DashboardLayout({
 	children,
@@ -20,7 +19,7 @@ export default async function DashboardLayout({
 
 	// Prefetch document metadata on the server
 	await queryClient.prefetchQuery({
-		queryKey: documentKeys.list(),
+		queryKey: ["documents"],
 		queryFn: getAllDocumentsMeta,
 	});
 

@@ -10,8 +10,7 @@ import {
 	SidebarGroupLabel,
 	SidebarMenu,
 } from "@/components/ui/sidebar";
-import { buildTree, type DocumentMeta } from "@/lib/build-tree";
-import { documentKeys } from "@/lib/react-query/queries";
+import { buildTree, type DocumentMeta } from "@/lib/utils/tree";
 import { DocTreeItem } from "./doc-tree-item";
 
 async function fetchDocumentsMeta(): Promise<DocumentMeta[]> {
@@ -40,14 +39,14 @@ export function DocTree({ focusedDocId, onFocusDoc }: DocTreeProps) {
 	const queryClient = useQueryClient();
 
 	const { data: docs = [] } = useQuery<DocumentMeta[]>({
-		queryKey: documentKeys.list(),
+		queryKey: ["documents"],
 		queryFn: fetchDocumentsMeta,
 	});
 
 	const { mutate: handleCreate, isPending } = useMutation({
 		mutationFn: createDocument,
 		onSuccess: (newDoc) => {
-			queryClient.invalidateQueries({ queryKey: documentKeys.list() });
+			queryClient.invalidateQueries({ queryKey: ["documents"] });
 			router.push(`/dashboard/${newDoc.slug}`);
 		},
 	});
