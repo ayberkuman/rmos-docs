@@ -1,27 +1,44 @@
-import { integer, pgTable, serial, text, timestamp } from 'drizzle-orm/pg-core';
+import {
+  boolean,
+  index,
+  integer,
+  jsonb,
+  pgTable,
+  text,
+  timestamp,
+  uuid,
+} from "drizzle-orm/pg-core";
 
-export const usersTable = pgTable('users_table', {
-  id: serial('id').primaryKey(),
-  name: text('name').notNull(),
-  age: integer('age').notNull(),
-  email: text('email').notNull().unique(),
-});
+export const documents = pgTable(
+  "documents",
+  {
+    id: uuid("id").primaryKey().defaultRandom(),
+    title: text("title").notNull().default("Untitled"),
+    slug: text("slug").notNull().unique(),
+    content: jsonb("content"),
+    icon: text("icon"),
 
-export const postsTable = pgTable('posts_table', {
-  id: serial('id').primaryKey(),
-  title: text('title').notNull(),
-  content: text('content').notNull(),
-  userId: integer('user_id')
-    .notNull()
-    .references(() => usersTable.id, { onDelete: 'cascade' }),
-  createdAt: timestamp('created_at').notNull().defaultNow(),
-  updatedAt: timestamp('updated_at')
-    .notNull()
-    .$onUpdate(() => new Date()),
-});
+    // Tree
+    parentId: uuid("parent_id").references((): any => documents.id, {
+      onDelete: "cascade",
+    }),
+    position: integer("position").notNull().default(0),
 
-export type InsertUser = typeof usersTable.$inferInsert;
-export type SelectUser = typeof usersTable.$inferSelect;
+    // Soft delete
+    isArchived: boolean("is_archived").notNull().default(false),
 
-export type InsertPost = typeof postsTable.$inferInsert;
-export type SelectPost = typeof postsTable.$inferSelect;
+    // Timestamps
+    createdAt: timestamp("created_at").notNull().defaultNow(),
+    updatedAt: timestamp("updated_at")
+      .notNull()
+      .$onUpdate(() => new Date()),
+  },
+  (table) => [
+    index("idx_documents_parent_id").on(table.parentId),
+    index("idx_documents_parent_position").on(table.parentId, table.position),
+    index("idx_documents_slug").on(table.slug),
+  ],
+);
+
+export type Document = typeof documents.$inferSelect;
+export type InsertDocument = typeof documents.$inferInsert;
