@@ -1,9 +1,9 @@
 "use server";
 
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { documents } from "@/db/schema";
-import { auth } from "@/lib/auth/server";
 import { generateUniqueSlug } from "@/lib/utils/slug";
 
 export async function createDocument(
@@ -12,11 +12,6 @@ export async function createDocument(
   icon?: string | null,
 ) {
   try {
-    const { data: session } = await auth.getSession();
-    if (!session?.session) {
-      return { error: "Unauthorized" };
-    }
-
     const slug = await generateUniqueSlug(title);
 
     const [doc] = await db
@@ -35,5 +30,20 @@ export async function createDocument(
   } catch (error) {
     console.error("Failed to create document:", error);
     return { error: "Failed to create document" };
+  }
+}
+
+export async function archiveDocument(documentId: string) {
+  try {
+    await db
+      .update(documents)
+      .set({ isArchived: true })
+      .where(eq(documents.id, documentId));
+
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to archive document:", error);
+    return { error: "Failed to archive document" };
   }
 }
