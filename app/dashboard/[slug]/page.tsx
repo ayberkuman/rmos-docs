@@ -1,6 +1,6 @@
 import { notFound } from "next/navigation";
 import { SimpleEditor } from "@/components/tiptap/simple/simple-editor";
-import { getDocumentBySlug } from "@/lib/queries/documents";
+import { getDocumentBySlug } from "@/lib/data/documents";
 
 export const dynamic = "force-dynamic";
 
