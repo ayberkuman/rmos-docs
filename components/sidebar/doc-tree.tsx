@@ -3,6 +3,7 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FileTextIcon, PlusIcon } from "lucide-react";
 import { useRouter } from "next/navigation";
+import { createDocumentAction } from "@/app/actions/documents";
 import {
 	SidebarGroup,
 	SidebarGroupAction,
@@ -19,16 +20,6 @@ async function fetchDocumentsMeta(): Promise<DocumentMeta[]> {
 	return res.json();
 }
 
-async function createDocument(data: { title?: string; parentId?: string }) {
-	const res = await fetch("/api/documents", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(data),
-	});
-	if (!res.ok) throw new Error("Failed to create document");
-	return res.json();
-}
-
 interface DocTreeProps {
 	focusedDocId: string | null;
 	onFocusDoc: (docId: string) => void;
@@ -40,11 +31,11 @@ export function DocTree({ focusedDocId, onFocusDoc }: DocTreeProps) {
 
 	const { data: docs = [] } = useQuery<DocumentMeta[]>({
 		queryKey: ["documents"],
-		queryFn: fetchDocumentsMeta,
+		queryFn: fetchDocumentsMeta, //TODO: bunun çekildiği yeri server componente çevirebilir miyiz?
 	});
 
 	const { mutate: handleCreate, isPending } = useMutation({
-		mutationFn: createDocument,
+		mutationFn: createDocumentAction,
 		onSuccess: (newDoc) => {
 			queryClient.invalidateQueries({ queryKey: ["documents"] });
 			router.push(`/dashboard/${newDoc.slug}`);

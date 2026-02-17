@@ -3,7 +3,7 @@
 import { UserButton } from "@neondatabase/auth/react";
 import { BookOpenIcon } from "lucide-react";
 import { useCallback, useState } from "react";
-import { DocTree } from "@/components/doc-tree";
+import { DocTree } from "@/components/sidebar/doc-tree";
 import {
 	Sidebar,
 	SidebarContent,
