@@ -8,7 +8,7 @@ export async function Home() {
 	const isAuthenticated = !!session;
 
 	return (
-		<main className="flex flex-1 flex-col items-center justify-center gap-8 px-4 py-16">
+		<main className="flex flex-col items-center justify-center gap-8 px-4 py-16 h-screen">
 			<div className="flex flex-col items-center gap-4 text-center">
 				<div className="flex size-16 items-center justify-center rounded-2xl bg-primary text-primary-foreground">
 					<BookOpenIcon className="size-8" />

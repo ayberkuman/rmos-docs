@@ -1,5 +1,6 @@
 "use server";
 
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { documents } from "@/db/schema";
@@ -35,5 +36,25 @@ export async function createDocument(
   } catch (error) {
     console.error("Failed to create document:", error);
     return { error: "Failed to create document" };
+  }
+}
+
+export async function archiveDocument(documentId: string) {
+  try {
+    const { data: session } = await auth.getSession();
+    if (!session?.session) {
+      return { error: "Unauthorized" };
+    }
+
+    await db
+      .update(documents)
+      .set({ isArchived: true })
+      .where(eq(documents.id, documentId));
+
+    revalidatePath("/dashboard");
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to archive document:", error);
+    return { error: "Failed to archive document" };
   }
 }
