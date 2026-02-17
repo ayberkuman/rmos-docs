@@ -75,7 +75,7 @@ export function DocTreeItem({
 					<ContextMenuContent>
 						<ContextMenuItem onClick={handleArchive}>
 							<ArchiveIcon className="mr-2 size-4" />
-							Arşivle
+							Archive
 						</ContextMenuItem>
 					</ContextMenuContent>
 				</ContextMenu>
@@ -117,7 +117,7 @@ export function DocTreeItem({
 					<ContextMenuContent>
 						<ContextMenuItem onClick={handleArchive}>
 							<ArchiveIcon className="mr-2 size-4" />
-							Arşivle
+							Archive
 						</ContextMenuItem>
 					</ContextMenuContent>
 				</ContextMenu>
