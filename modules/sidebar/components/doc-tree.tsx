@@ -1,8 +1,6 @@
 "use client";
 
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { FileTextIcon, PlusIcon } from "lucide-react";
-import { useRouter } from "next/navigation";
 import {
 	SidebarGroup,
 	SidebarGroupAction,
@@ -10,24 +8,9 @@ import {
 	SidebarGroupLabel,
 	SidebarMenu,
 } from "@/components/ui/sidebar";
-import { buildTree, type DocumentMeta } from "@/lib/utils/tree";
+import { buildTree } from "../../documents/helpers";
+import { useDocuments } from "../../documents/hooks/use-documents";
 import { DocTreeItem } from "./doc-tree-item";
-
-async function fetchDocumentsMeta(): Promise<DocumentMeta[]> {
-	const res = await fetch("/api/documents");
-	if (!res.ok) throw new Error("Failed to fetch documents");
-	return res.json();
-}
-
-async function createDocument(data: { title?: string; parentId?: string }) {
-	const res = await fetch("/api/documents", {
-		method: "POST",
-		headers: { "Content-Type": "application/json" },
-		body: JSON.stringify(data),
-	});
-	if (!res.ok) throw new Error("Failed to create document");
-	return res.json();
-}
 
 interface DocTreeProps {
 	focusedDocId: string | null;
@@ -35,21 +18,11 @@ interface DocTreeProps {
 }
 
 export function DocTree({ focusedDocId, onFocusDoc }: DocTreeProps) {
-	const router = useRouter();
-	const queryClient = useQueryClient();
-
-	const { data: docs = [] } = useQuery<DocumentMeta[]>({
-		queryKey: ["documents"],
-		queryFn: fetchDocumentsMeta,
-	});
-
-	const { mutate: handleCreate, isPending } = useMutation({
-		mutationFn: createDocument,
-		onSuccess: (newDoc) => {
-			queryClient.invalidateQueries({ queryKey: ["documents"] });
-			router.push(`/dashboard/${newDoc.slug}`);
-		},
-	});
+	const {
+		documents: docs,
+		createDocument: handleCreate,
+		isCreating: isPending,
+	} = useDocuments();
 
 	const tree = buildTree(docs);
 

@@ -1,14 +1,14 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { AppSidebar } from "@/components/app-sidebar";
 import { Separator } from "@/components/ui/separator";
 import {
 	SidebarInset,
 	SidebarProvider,
 	SidebarTrigger,
 } from "@/components/ui/sidebar";
-import { getAllDocumentsMeta } from "@/lib/queries/documents";
+import { getAllDocumentsMeta } from "@/lib/data/documents";
 import { getQueryClient } from "@/lib/react-query/get-query-client";
+import { AppSidebar } from "@/modules/sidebar/components/app-sidebar";
 
 export default async function DashboardLayout({
 	children,
@@ -17,7 +17,7 @@ export default async function DashboardLayout({
 }) {
 	const queryClient = getQueryClient();
 
-	// Prefetch document metadata on the server
+	// Prefetch document metadata on the server so it's available immediately on the client, avoiding a loading state.
 	await queryClient.prefetchQuery({
 		queryKey: ["documents"],
 		queryFn: getAllDocumentsMeta,

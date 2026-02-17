@@ -1,15 +1,4 @@
-export type DocumentMeta = {
-  id: string;
-  title: string;
-  slug: string;
-  icon: string | null;
-  parentId: string | null;
-  position: number;
-};
-
-export type TreeNode = DocumentMeta & {
-  children: TreeNode[];
-};
+import type { DocumentMeta, TreeNode } from "./types";
 
 /**
  * Converts a flat array of documents into a nested tree structure.
