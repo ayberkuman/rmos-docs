@@ -3,7 +3,6 @@
 import { UserButton } from "@neondatabase/auth/react";
 import { BookOpenIcon } from "lucide-react";
 import { useCallback, useState } from "react";
-import { DocTree } from "@/components/doc-tree";
 import {
 	Sidebar,
 	SidebarContent,
@@ -11,6 +10,7 @@ import {
 	SidebarHeader,
 	SidebarRail,
 } from "@/components/ui/sidebar";
+import { DocTree } from "./doc-tree";
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 	const [focusedDocId, setFocusedDocId] = useState<string | null>(null);
@@ -43,7 +43,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
 			</SidebarContent>
 			<SidebarFooter>
 				<div className="flex items-center justify-end py-2">
-					<UserButton size="icon" />
+					<UserButton size="icon" align="end" />
 				</div>
 			</SidebarFooter>
 			<SidebarRail />

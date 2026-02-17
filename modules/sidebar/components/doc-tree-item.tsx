@@ -13,7 +13,7 @@ import {
 	SidebarMenuItem,
 	SidebarMenuSub,
 } from "@/components/ui/sidebar";
-import type { TreeNode } from "@/lib/build-tree";
+import type { TreeNode } from "../../documents/types";
 
 interface DocTreeItemProps {
 	node: TreeNode;
