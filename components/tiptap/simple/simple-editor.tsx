@@ -208,9 +208,6 @@ export function SimpleEditor({ content }: { content: Content }) {
 	);
 
 	const editor = useEditor({
-		onUpdate: (editor) => {
-			maybeExecute(editor.editor.getJSON());
-		},
 		immediatelyRender: false,
 		editorProps: {
 			attributes: {

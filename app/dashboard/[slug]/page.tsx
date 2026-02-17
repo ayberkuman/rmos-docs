@@ -14,5 +14,9 @@ export default async function DocumentPage({
 
 	if (!doc) notFound();
 
-	return <SimpleEditor content={doc.content} />;
+	return (
+		<div className="flex-1">
+			<SimpleEditor content={doc.content} />
+		</div>
+	);
 }

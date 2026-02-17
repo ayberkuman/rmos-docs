@@ -69,11 +69,10 @@ export const HeadingDropdownMenu = forwardRef<
 
 		const handleOpenChange = useCallback(
 			(open: boolean) => {
-				if (!editor || !canToggle) return;
 				setIsOpen(open);
 				onOpenChange?.(open);
 			},
-			[canToggle, editor, onOpenChange],
+			[onOpenChange],
 		);
 
 		if (!isVisible) {
@@ -81,7 +80,7 @@ export const HeadingDropdownMenu = forwardRef<
 		}
 
 		return (
-			<DropdownMenu modal open={isOpen} onOpenChange={handleOpenChange}>
+			<DropdownMenu open={isOpen} onOpenChange={handleOpenChange}>
 				<DropdownMenuTrigger asChild>
 					<Button
 						type="button"
@@ -113,7 +112,10 @@ export const HeadingDropdownMenu = forwardRef<
 						<CardBody>
 							<ButtonGroup>
 								{levels.map((level) => (
-									<DropdownMenuItem key={`heading-${level}`} asChild>
+									<DropdownMenuItem
+										key={`heading-${level}`}
+										onClick={() => setIsOpen(false)}
+									>
 										<HeadingButton
 											editor={editor}
 											level={level}

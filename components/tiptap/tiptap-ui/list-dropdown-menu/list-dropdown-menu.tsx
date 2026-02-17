@@ -106,7 +106,10 @@ export function ListDropdownMenu({
 					<CardBody>
 						<ButtonGroup>
 							{filteredLists.map((option) => (
-								<DropdownMenuItem key={option.type} asChild>
+								<DropdownMenuItem
+									key={option.type}
+									onClick={() => setIsOpen(false)}
+								>
 									<ListButton
 										editor={editor}
 										type={option.type}
