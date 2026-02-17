@@ -1,5 +1,7 @@
 "use server";
 
+import type { Content } from "@tiptap/react";
+import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
 import { db } from "@/db";
 import { documents } from "@/db/schema";
@@ -35,5 +37,27 @@ export async function createDocument(
   } catch (error) {
     console.error("Failed to create document:", error);
     return { error: "Failed to create document" };
+  }
+}
+
+export async function updateDocumentContent(
+  documentId: string,
+  content: Content,
+) {
+  try {
+    const { data: session } = await auth.getSession();
+    if (!session?.session) {
+      return { error: "Unauthorized" };
+    }
+
+    await db
+      .update(documents)
+      .set({ content })
+      .where(eq(documents.id, documentId));
+
+    return { success: true };
+  } catch (error) {
+    console.error("Failed to update document content:", error);
+    return { error: "Failed to update document content" };
   }
 }

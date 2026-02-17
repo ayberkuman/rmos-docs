@@ -73,6 +73,36 @@ import { handleImageUpload, MAX_FILE_SIZE } from "@/lib/tiptap-utils";
 import "@/components/tiptap/simple/simple-editor.scss";
 
 import { useAsyncDebouncer } from "@tanstack/react-pacer/async-debouncer";
+import { updateDocumentContent } from "@/modules/documents/actions";
+
+type SaveStatus = "idle" | "pending" | "saving" | "saved";
+
+function SaveStatusIndicator({
+	statusSetterRef,
+}: {
+	statusSetterRef: React.RefObject<React.Dispatch<
+		React.SetStateAction<SaveStatus>
+	> | null>;
+}) {
+	const [status, setStatus] = useState<SaveStatus>("idle");
+
+	useEffect(() => {
+		statusSetterRef.current = setStatus;
+		return () => {
+			statusSetterRef.current = null;
+		};
+	}, [statusSetterRef]);
+
+	if (status === "idle") return null;
+
+	return (
+		<span className="text-xs text-muted-foreground px-2 py-1">
+			{status === "pending" && "Unsaved changes"}
+			{status === "saving" && "Saving..."}
+			{status === "saved" && "Saved"}
+		</span>
+	);
+}
 
 const MainToolbarContent = ({
 	onHighlighterClick,
@@ -182,32 +212,43 @@ const MobileToolbarContent = ({
 	</>
 );
 
-export function SimpleEditor({ content }: { content: Content }) {
+export function SimpleEditor({
+	documentId,
+	content,
+}: { documentId: string; content: Content }) {
 	const isMobile = useIsBreakpoint();
 	const { height } = useWindowSize();
 	const [mobileView, setMobileView] = useState<"main" | "highlighter" | "link">(
 		"main",
 	);
 	const toolbarRef = useRef<HTMLDivElement>(null);
+	const statusSetterRef = useRef<React.Dispatch<
+		React.SetStateAction<SaveStatus>
+	> | null>(null);
 
-	const { maybeExecute, state } = useAsyncDebouncer(
-		async (content) => {
-			await new Promise((resolve) => {
-				setTimeout(() => {
-					console.log(content);
-					resolve("success");
-				}, 500);
-			});
+	const { maybeExecute } = useAsyncDebouncer(
+		async (newContent: Content) => {
+			statusSetterRef.current?.("saving");
+			const result = await updateDocumentContent(documentId, newContent);
+			if (result.error) {
+				console.error(result.error);
+				statusSetterRef.current?.("pending");
+			} else {
+				statusSetterRef.current?.("saved");
+			}
 		},
 		{ wait: 2000 },
-
-		(state) => ({
-			isPending: state.isPending,
-			status: state.status,
-		}),
+		() => null,
 	);
 
+	const maybeExecuteRef = useRef(maybeExecute);
+	maybeExecuteRef.current = maybeExecute;
+
 	const editor = useEditor({
+		onUpdate: ({ editor: e }) => {
+			statusSetterRef.current?.("pending");
+			maybeExecuteRef.current(e.getJSON());
+		},
 		immediatelyRender: false,
 		editorProps: {
 			attributes: {
@@ -260,11 +301,6 @@ export function SimpleEditor({ content }: { content: Content }) {
 
 	return (
 		<div className="simple-editor-wrapper">
-			<div>
-				{state.status === "pending" && "pending"}
-				{state.status === "executing" && "saving"}
-				{state.status === "settled" && "saved"}
-			</div>
 			<EditorContext.Provider value={{ editor }}>
 				<Toolbar
 					ref={toolbarRef}
@@ -289,6 +325,8 @@ export function SimpleEditor({ content }: { content: Content }) {
 						/>
 					)}
 				</Toolbar>
+
+				<SaveStatusIndicator statusSetterRef={statusSetterRef} />
 
 				<EditorContent
 					editor={editor}

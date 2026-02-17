@@ -16,7 +16,7 @@ export default async function DocumentPage({
 
 	return (
 		<div className="flex-1">
-			<SimpleEditor content={doc.content} />
+			<SimpleEditor documentId={doc.id} content={doc.content} />
 		</div>
 	);
 }
