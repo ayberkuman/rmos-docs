@@ -1,6 +1,6 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useRouter } from "next/navigation";
-import { createDocument } from "../actions";
+import { archiveDocument, createDocument } from "../actions";
 import type { DocumentMeta } from "../types";
 
 async function fetchDocumentsMeta(): Promise<DocumentMeta[]> {
@@ -38,10 +38,25 @@ export function useDocuments() {
     },
   });
 
+  const archiveDocumentMutation = useMutation({
+    mutationFn: async (documentId: string) => {
+      const result = await archiveDocument(documentId);
+      if (result.error) throw new Error(result.error);
+      return result;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["documents"] });
+      router.push("/dashboard");
+
+    },
+  });
+
   return {
     documents: documentsQuery.data ?? [],
     isLoading: documentsQuery.isLoading,
     createDocument: createDocumentMutation.mutate,
     isCreating: createDocumentMutation.isPending,
+    archiveDocument: archiveDocumentMutation.mutate,
+    isArchiving: archiveDocumentMutation.isPending,
   };
 }
