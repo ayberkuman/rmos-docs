@@ -1,6 +1,5 @@
 import { dehydrate, HydrationBoundary } from "@tanstack/react-query";
 import type { ReactNode } from "react";
-import { AppSidebar } from "@/components/sidebar/app-sidebar";
 import { Separator } from "@/components/ui/separator";
 import {
 	SidebarInset,
@@ -9,6 +8,7 @@ import {
 } from "@/components/ui/sidebar";
 import { getAllDocumentsMeta } from "@/lib/data/documents";
 import { getQueryClient } from "@/lib/react-query/get-query-client";
+import { AppSidebar } from "@/modules/sidebar/components/app-sidebar";
 
 export default async function DashboardLayout({
 	children,

@@ -41,10 +41,7 @@ export default function RootLayout({
 				className={`${geistSans.variable} ${geistMono.variable} antialiased`}
 			>
 				<QueryProvider>
-					<NeonAuthUIProvider
-						authClient={authClient}
-						redirectTo="/account/settings"
-					>
+					<NeonAuthUIProvider authClient={authClient} redirectTo="/dashboard">
 						{children}
 					</NeonAuthUIProvider>
 				</QueryProvider>
